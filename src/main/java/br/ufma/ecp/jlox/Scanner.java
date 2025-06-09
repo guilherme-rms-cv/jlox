@@ -23,7 +23,7 @@ class Scanner {
     while (!isAtEnd()) {
       // We are at the beginning of the next lexeme.
       start = current;
-      // scanToken();
+      scanToken();
     }
 
     tokens.add(new Token(EOF, "", null, line));
@@ -32,5 +32,35 @@ class Scanner {
 
   private boolean isAtEnd() {
     return current >= source.length();
+  }
+
+  private void scanToken() {
+    char c = advance();
+    switch (c) {
+      case '(': addToken(LEFT_PAREN); break;
+      case ')': addToken(RIGHT_PAREN); break;
+      case '{': addToken(LEFT_BRACE); break;
+      case '}': addToken(RIGHT_BRACE); break;
+      case ',': addToken(COMMA); break;
+      case '.': addToken(DOT); break;
+      case '-': addToken(MINUS); break;
+      case '+': addToken(PLUS); break;
+      case ';': addToken(SEMICOLON); break;
+      case '*': addToken(STAR); break; 
+    }
+  }
+
+  private char advance() {
+    char c = source.charAt(current++);
+    return c;
+  }
+
+  private void addToken(TokenType type) {
+    addToken(type, null);
+  }
+
+  private void addToken(TokenType type, Object literal) {
+    String text = source.substring(start, current);
+    tokens.add(new Token(type, text, literal, line));
   }
 }
