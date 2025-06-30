@@ -50,6 +50,11 @@ public class Lox {
     Parser parser = new Parser(tokens);
     Expr expression = parser.parse();
 
+    Expr expression = parser.parse();
+    if (expression != null) {
+        new Interpreter().interpret(expression);
+    }
+
     if (expression != null) {
       System.out.println(new AstPrinter().print(expression));
     }
