@@ -1,9 +1,38 @@
 package br.ufma.ecp.jlox;
 
-import java.util.ArrayList;
-import java.util.List;
+import static br.ufma.ecp.jlox.TokenType.AND;
+import static br.ufma.ecp.jlox.TokenType.BANG;
+import static br.ufma.ecp.jlox.TokenType.BANG_EQUAL;
+import static br.ufma.ecp.jlox.TokenType.ELSE;
+import static br.ufma.ecp.jlox.TokenType.EOF;
+import static br.ufma.ecp.jlox.TokenType.EQUAL;
+import static br.ufma.ecp.jlox.TokenType.EQUAL_EQUAL;
+import static br.ufma.ecp.jlox.TokenType.FALSE;
+import static br.ufma.ecp.jlox.TokenType.GREATER;
+import static br.ufma.ecp.jlox.TokenType.GREATER_EQUAL;
+import static br.ufma.ecp.jlox.TokenType.IDENTIFIER;
+import static br.ufma.ecp.jlox.TokenType.IF;
+import static br.ufma.ecp.jlox.TokenType.LEFT_BRACE;
+import static br.ufma.ecp.jlox.TokenType.LEFT_PAREN;
+import static br.ufma.ecp.jlox.TokenType.LESS;
+import static br.ufma.ecp.jlox.TokenType.LESS_EQUAL;
+import static br.ufma.ecp.jlox.TokenType.MINUS;
+import static br.ufma.ecp.jlox.TokenType.NIL;
+import static br.ufma.ecp.jlox.TokenType.NUMBER;
+import static br.ufma.ecp.jlox.TokenType.OR;
+import static br.ufma.ecp.jlox.TokenType.PLUS;
+import static br.ufma.ecp.jlox.TokenType.PRINT;
+import static br.ufma.ecp.jlox.TokenType.RIGHT_BRACE;
+import static br.ufma.ecp.jlox.TokenType.RIGHT_PAREN;
+import static br.ufma.ecp.jlox.TokenType.SEMICOLON;
+import static br.ufma.ecp.jlox.TokenType.SLASH;
+import static br.ufma.ecp.jlox.TokenType.STAR;
+import static br.ufma.ecp.jlox.TokenType.STRING;
+import static br.ufma.ecp.jlox.TokenType.TRUE;
+import static br.ufma.ecp.jlox.TokenType.VAR;
 
-import static br.ufma.ecp.jlox.TokenType.*; 
+import java.util.ArrayList;
+import java.util.List; 
 
 class Parser {
     private static class ParseError extends RuntimeException {}
@@ -97,7 +126,7 @@ class Parser {
     }
 
     private Expr assignment() {
-        Expr expr = equality();
+        Expr expr = or();
 
         if (match(EQUAL)) {
             Token equals = previous();
@@ -109,6 +138,30 @@ class Parser {
         }
 
       error(equals, "Invalid assignment target."); 
+    }
+
+    private Expr or() {
+        Expr expr = and();
+
+    while (match(OR)) {
+      Token operator = previous();
+      Expr right = and();
+      expr = new Expr.Logical(expr, operator, right);
+    }
+
+    return expr;
+    }
+
+    private Expr and() {
+        Expr expr = equality();
+
+        while (match(AND)) {
+            Token operator = previous();
+            Expr right = equality();
+            expr = new Expr.Logical(expr, operator, right);
+        }
+
+    return expr;
     }
 
         return expr;
