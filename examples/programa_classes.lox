@@ -1,0 +1,13 @@
+class Animal {
+  init(nome, tipo) {
+    this.nome = nome;
+    this.tipo = tipo;
+  }
+
+  apresentar() {
+    print "Sou um " + this.tipo + " chamado " + this.nome + ".";
+  }
+}
+
+var a = Animal("Rex", "cachorro");
+a.apresentar();
